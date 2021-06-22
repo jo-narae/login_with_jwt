@@ -38,6 +38,7 @@ public class AuthController {
         } catch (NoSuchElementException e) {
             Member newMember = new Member(null, req.getSocialId(), null, null, req.getNickname());
             memberService.save(newMember);
+            member.setId(newMember.getId());
             member.setSocialId(newMember.getSocialId());
             member.setNickname(newMember.getNickname());
         }

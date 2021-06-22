@@ -22,13 +22,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(userId).get();
+    public UserDetails loadUserByUsername(String search) throws UsernameNotFoundException {
+        Member member = memberRepository.findByEmail(search).get();
         if(member == null) {
-            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+            member = memberRepository.findBySocialId(search).get();
+            if (member == null) {
+                throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
+            }
         }
         Set<GrantedAuthority> authorities = new HashSet<>();
-        MemberDetail userDetails = new MemberDetail(member.getEmail(), "", authorities);
+        MemberDetail userDetails = new MemberDetail(member.getNickname(), "", authorities);
 
         return userDetails;
     }
